@@ -155,7 +155,7 @@ class Home extends CI_Controller
         $pdf->SetKeywords('TCPDF, PDF, example, test, guide');
 
         // set default header data
-        $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, "Surat Pengerjaan" . '- B 12313 pek', "Daihatsu Narogong Bekasi");
+        $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, "Surat Pengerjaan" . '- ' . strtoupper($data_workshop->nopol), "Daihatsu Narogong Bekasi");
 
         // set header and footer fonts
         $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
