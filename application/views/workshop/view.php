@@ -28,13 +28,14 @@
                                 <td>
                                     <?php if ($value->status > 0) { ?>
                                         <a href="<?= base_url("workshop/detail_page/") . $value->id ?>" class="btn btn-primary mr-2">Detail</a>
+                                        <a class="btn btn-info" href="<?= base_url("home/generate_barcode_pdf/") . $value->id ?>" target="_blank">Print Data</a>
                                     <?php } else { ?>
                                         <?php if ($_SESSION['role'] == "kasir" || $_SESSION['role'] == 'admin') { ?>
                                             <a href="<?= base_url("workshop/confirm_payment/") . $value->id ?>" class="btn btn-success mr-2">Confirm</a>
                                         <?php } ?>
                                         <a href="<?= base_url("workshop/edit_page/") . $value->id ?>" class="btn btn-info mr-2">Edit</a>
+                                        <button class="btn btn-danger" onclick="delete_data(<?= $value->id ?>)">Delete</button>
                                     <?php } ?>
-                                    <button class="btn btn-danger" onclick="delete_data(<?= $value->id ?>)">Delete</button>
                                 </td>
                             </tr>
                         <?php } ?>
