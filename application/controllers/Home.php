@@ -149,9 +149,9 @@ class Home extends CI_Controller
 
         // set document information
         $pdf->SetCreator(PDF_CREATOR);
-        $pdf->SetAuthor('Nicola Asuni');
-        $pdf->SetTitle('TCPDF Example 027');
-        $pdf->SetSubject('TCPDF Tutorial');
+        $pdf->SetAuthor('Habibi');
+        $pdf->SetTitle('Surat Pengerjaan');
+        $pdf->SetSubject('Surat Pengerjaan');
         $pdf->SetKeywords('TCPDF, PDF, example, test, guide');
 
         // set default header data
