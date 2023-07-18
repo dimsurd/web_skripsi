@@ -34,7 +34,7 @@ class Home extends CI_Controller
     public function index()
     {
         $data_waiting_for_payment = $this->db->where('status', 0)->get('workshop')->result();
-        $data_on_process = $this->db->select("a.id,a.nopol,customer_name,a.total,b.charge_name")->from("workshop a")->join('workshop_charge_repair b', 'b.id_workshop = a.id')->where('b.is_scanned', 0)->where('a.status', 1)->order_by('b.id', 'desc')->group_by('a.id,a.nopol,customer_name,a.total,b.charge_name,b.id')->get()->result();
+        $data_on_process = $this->db->select("a.id,MAX(a.nopol)AS nopol,MAX(customer_name) as customer_name,MAX(a.total) as total,MAX(b.charge_name) as charge_name")->from("workshop a")->join('workshop_charge_repair b', 'b.id_workshop = a.id')->where('b.is_scanned', 0)->where('a.status', 1)->group_by('a.id')->get()->result();
         $data_finishing = $this->db->where('status', 2)->get('workshop')->result();
         $data_finished = $this->db->where('status', 3)->get('workshop')->result();
 
@@ -73,16 +73,19 @@ class Home extends CI_Controller
 
         // End Data Validation
 
+
         // Check if all data already scanned
         $current_data_seq = $this->db->where('id_workshop', $id)->where('is_scanned <> 1')->order_by('scan_seq', 'ASC')->get('workshop_charge_repair')->row();
+
+
 
         if ($current_data_seq) {
             $id_workshop_charge_repair = $current_data_seq->id;
 
             $dataupdate = array(
-                'IS_SCANNED' => 1,
-                'DATE_LOG' => date('Y-m-d H:i:s'),
-                'USER_LOG' => $_SESSION['username'],
+                'is_scanned' => 1,
+                'date_log' => date('Y-m-d H:i:s'),
+                'user_log' => $_SESSION['username'],
             );
             $this->db->set($dataupdate);
             $this->db->where(array('id' => $id_workshop_charge_repair));
@@ -113,8 +116,8 @@ class Home extends CI_Controller
                 );
             }
             $this->db->set($dataupdateWorkshop);
-            $this->db->where(array('ID' => $id));
-            $this->db->update('WORKSHOP');
+            $this->db->where(array('id' => $id));
+            $this->db->update('workshop');
         }
 
 
