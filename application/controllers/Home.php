@@ -34,7 +34,7 @@ class Home extends CI_Controller
     public function index()
     {
         $data_waiting_for_payment = $this->db->where('status', 0)->get('workshop')->result();
-        $data_on_process = $this->db->select("a.id,a.nopol,customer_name,a.total,b.charge_name")->from("workshop a")->join('workshop_charge_repair b', 'b.id_workshop = a.id')->where('b.is_scanned', 0)->where('a.status', 1)->order_by('b.id', 'desc')->group_by('a.id,a.nopol,customer_name,a.total')->get()->result();
+        $data_on_process = $this->db->select("a.id,a.nopol,customer_name,a.total,b.charge_name")->from("workshop a")->join('workshop_charge_repair b', 'b.id_workshop = a.id')->where('b.is_scanned', 0)->where('a.status', 1)->order_by('b.id', 'desc')->group_by('a.id,a.nopol,customer_name,a.total,b.charge_name,b.id')->get()->result();
         $data_finishing = $this->db->where('status', 2)->get('workshop')->result();
         $data_finished = $this->db->where('status', 3)->get('workshop')->result();
 
