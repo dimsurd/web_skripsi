@@ -163,7 +163,7 @@
 <script>
     const tables = $('.table').DataTable();
 
-    let stringVal = '';
+    let mergeString = ''
     var url = "<?php echo base_url() ?>";
 
     setTimeout(() => {
@@ -173,9 +173,20 @@
     $('#onscan_string').focus();
 
     $('#onscan_string').on('change', function() {
-        stringVal = $('#onscan_string').val()
+        const stringVal = $('#onscan_string').val()
+        var matches = stringVal.match(/\d+/g);
+
+        if (matches) {
+            matches.forEach(function(num) {
+                mergeString += num
+            });
+        }
+
         $("#frmAdd").submit();
     });
+
+
+
 
     $('#onscan_string').on('keydown', function() {
         setTimeout(() => {
@@ -189,7 +200,7 @@
             url: "<?php echo base_url('home/scan_data/'); ?>",
             dataType: "JSON",
             data: {
-                id: stringVal,
+                id: mergeString,
             },
             type: 'POST',
             success: function(data) {
