@@ -142,6 +142,26 @@ class Home extends CI_Controller
         $generator = new Picqer\Barcode\BarcodeGeneratorHTML();
         echo $generator->getBarcode('081231723897', $generator::TYPE_CODE_128);
     }
+    public function generate_fpdf($id)
+    {
+        $data_workshop = $this->db->where('id', $id)->get('workshop')->row();
+        $salt = "habibi";
+
+        $position = strpos($salt, 'h');
+        $length = strlen($id);
+
+        // Replace the 'h' with the integer value
+        if ($position !== false) {
+            $salt = substr_replace($salt, $id, $position, $length);
+        }
+
+        $pdf = new fpdf39();
+        $pdf->AddPage();
+        $pdf->Code39(80, 40, $salt, 1, 10);
+        $pdf->Output();
+    }
+
+
     public function generate_barcode_pdf($id)
     {
         $data_workshop = $this->db->where('id', $id)->get('workshop')->row();
