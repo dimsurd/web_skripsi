@@ -23,7 +23,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'https://localhost/scan_works/';
+$config['base_url'] = 'http://localhost/scan_works/';
 
 /*
 |--------------------------------------------------------------------------
