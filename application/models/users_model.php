@@ -17,6 +17,18 @@ class Users_model extends CI_Model
 
     public function create_data($data)
     {
+        $username = $data['username'];
+
+        // Check duplicate username
+        $duplicate_data = $this->db->where('username', $username)->get('users')->row();
+        if ($duplicate_data) {
+            $result['status'] = false;
+            $result['message'] = 'Username already exist';
+            $result['code'] = '501';
+            return $result;
+        }
+        // End Check duplicate username
+
 
         // hash password
         $hashed_password = md5($data['password']);
@@ -33,13 +45,34 @@ class Users_model extends CI_Model
             'user_log' => $_SESSION['username'],
         ];
 
-        $this->db->insert('users', $data_insert);
-        return  $this->db->affected_rows();
+        $create_data = $this->db->insert('users', $data_insert);
+
+        if (!$create_data) {
+            $result['status'] = false;
+            $result['message'] = 'Failed: Failed to submit data';
+            $result['code'] = '500';
+        } else {
+            $result['status'] = true;
+            $result['message'] = 'Data has been saved';
+            $result['code'] = '201';
+        }
+        return $result;
     }
 
     public function update_data($data)
     {
         $id = $data['id_hidden'];
+        $username = $data['username'];
+
+        // Check duplicate username
+        $duplicate_data = $this->db->where('username', $username)->where('id <>', $id)->get('users')->row();
+        if ($duplicate_data) {
+            $result['status'] = false;
+            $result['message'] = 'Username already exist';
+            $result['code'] = '501';
+            return $result;
+        }
+        // End Check duplicate username
 
 
         if (empty($data['password'])) {
@@ -66,8 +99,17 @@ class Users_model extends CI_Model
 
 
         $this->db->where('id', $id);
-        $this->db->update('users', $data_update);
-        return  $this->db->affected_rows();
+        $update = $this->db->update('users', $data_update);
+        if (!$update) {
+            $result['status'] = false;
+            $result['message'] = 'Failed: Failed to submit data';
+            $result['code'] = '500';
+        } else {
+            $result['status'] = true;
+            $result['message'] = 'Data has been saved';
+            $result['code'] = '201';
+        }
+        return $result;
     }
 
     public function delete_data($id)

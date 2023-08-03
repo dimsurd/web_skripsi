@@ -33,17 +33,18 @@ class Home extends CI_Controller
     }
     public function index()
     {
-        $data_waiting_for_payment = $this->db->where('status', 0)->get('workshop')->result();
-        $data_on_process = $this->db->select("w.*,wcr.charge_name")->from('workshop w')->join("workshop_charge_repair wcr", 'wcr.id_workshop = w.id')->where('wcr.is_scanned', 0)->where("w.status", 1)->group_by('w.id')->get()->result();
-        // $data_on_process = $this->db->select("a.id,MAX(a.nopol)AS nopol,MAX(customer_name) as customer_name,MAX(a.total) as total,MAX(b.charge_name) as charge_name")->from("workshop a")->join('workshop_charge_repair b', 'b.id_workshop = a.id')->where('b.is_scanned', 0)->where('a.status', 1)->group_by('a.id')->order_by('a.id', 'desc')->get()->result();
-        $data_finishing = $this->db->where('status', 2)->get('workshop')->result();
-        $data_finished = $this->db->where('status', 3)->get('workshop')->result();
+        $data_waiting_for_approval = $this->db->where('status', 0)->get('workshop')->result();
+        $data_antri_bongkar = $this->db->where('status', 1)->get('workshop')->result();
+        $data_on_process = $this->db->where('status >', 1)->where('status <', 8)->get('workshop')->result();
+        $data_finishing = $this->db->where('status', 8)->get('workshop')->result();
+        $data_finished = $this->db->where('status', 9)->get('workshop')->result();
 
         $data = [
+            "data_antri_bongkar" => $data_antri_bongkar,
             "data_on_process" => $data_on_process,
             "data_finished" => $data_finished,
             "data_finishing" => $data_finishing,
-            "data_waiting_for_payment" => $data_waiting_for_payment,
+            "data_waiting_for_approval" => $data_waiting_for_approval,
         ];
         $this->load->view('home', $data);
     }
@@ -51,8 +52,6 @@ class Home extends CI_Controller
     public function scan_data()
     {
         $id = $_POST['id'];
-
-
 
         $this->db->trans_begin();
 
@@ -63,63 +62,82 @@ class Home extends CI_Controller
             $res['msg'] = 'Data Not Found';
             echo json_encode($res);
             exit;
+        } else {
+            if ($data_workshop->status == 0) {
+                $res['status'] = false;
+                $res['msg'] = 'Please confirm payment first';
+                echo json_encode($res);
+                exit;
+            } else if ($data_workshop->status == 9) {
+                $res['status'] = false;
+                $res['msg'] = 'This data already finished';
+                echo json_encode($res);
+                exit;
+            }
         }
-
-        if ($data_workshop->status == 3) {
-            $res['status'] = false;
-            $res['msg'] = 'This data already finished';
-            echo json_encode($res);
-            exit;
-        }
-
         // End Data Validation
 
 
-        // Check if all data already scanned
-        $current_data_seq = $this->db->where('id_workshop', $id)->where('is_scanned <> 1')->order_by('scan_seq', 'ASC')->get('workshop_charge_repair')->row();
-
-
-
-        if ($current_data_seq) {
-            $id_workshop_charge_repair = $current_data_seq->id;
-
-            $dataupdate = array(
-                'is_scanned' => 1,
+        if ($data_workshop->status == 1) {
+            // Update status menjadi proses bongkar
+            $dataupdateWorkshop = array(
+                'status' => 2,
                 'date_log' => date('Y-m-d H:i:s'),
                 'user_log' => $_SESSION['username'],
             );
-            $this->db->set($dataupdate);
-            $this->db->where(array('id' => $id_workshop_charge_repair));
-            $this->db->update('workshop_charge_repair');
+        } elseif ($data_workshop->status == 2) {
+            // Update status menjadi proses dempul
+            $dataupdateWorkshop = array(
+                'status' => 3,
+                'date_log' => date('Y-m-d H:i:s'),
+                'user_log' => $_SESSION['username'],
+            );
+        } elseif ($data_workshop->status == 3) {
+            // Update status menjadi proses masking
+            $dataupdateWorkshop = array(
+                'status' => 4,
+                'date_log' => date('Y-m-d H:i:s'),
+                'user_log' => $_SESSION['username'],
+            );
+        } elseif ($data_workshop->status == 4) {
+            // Update status menjadi proses cat
+            $dataupdateWorkshop = array(
+                'status' => 5,
+                'date_log' => date('Y-m-d H:i:s'),
+                'user_log' => $_SESSION['username'],
+            );
+        } elseif ($data_workshop->status == 5) {
+            // Update status menjadi proses rakit
+            $dataupdateWorkshop = array(
+                'status' => 6,
+                'date_log' => date('Y-m-d H:i:s'),
+                'user_log' => $_SESSION['username'],
+            );
+        } elseif ($data_workshop->status == 6) {
+            // Update status menjadi proses poles
+            $dataupdateWorkshop = array(
+                'status' => 7,
+                'date_log' => date('Y-m-d H:i:s'),
+                'user_log' => $_SESSION['username'],
+            );
+        } elseif ($data_workshop->status == 7) {
+            // Update status menjadi proses finishing
+            $dataupdateWorkshop = array(
+                'status' => 8,
+                'date_log' => date('Y-m-d H:i:s'),
+                'user_log' => $_SESSION['username'],
+            );
+        } elseif ($data_workshop->status == 8) {
+            // Update status menjadi proses finished
+            $dataupdateWorkshop = array(
+                'status' => 9,
+                'date_log' => date('Y-m-d H:i:s'),
+                'user_log' => $_SESSION['username'],
+            );
         }
-        // End Check if all data already scanned
-
-        $last_data_seq = $this->db->where('id_workshop', $id)->where('is_scanned <> 1')->order_by('scan_seq', 'ASC')->get('workshop_charge_repair')->row();
-
-        if (!$last_data_seq) {
-            if ($data_workshop->status == 1) {
-                $dataupdateWorkshop = array(
-                    'status' => 2,
-                    'date_log' => date('Y-m-d H:i:s'),
-                    'user_log' => $_SESSION['username'],
-                );
-            } elseif ($data_workshop->status == 2) {
-                $dataupdateWorkshop = array(
-                    'status' => 3,
-                    'date_log' => date('Y-m-d H:i:s'),
-                    'user_log' => $_SESSION['username'],
-                );
-            } elseif ($data_workshop->status == 3) {
-                $dataupdateWorkshop = array(
-                    'status' => 4,
-                    'date_log' => date('Y-m-d H:i:s'),
-                    'user_log' => $_SESSION['username'],
-                );
-            }
-            $this->db->set($dataupdateWorkshop);
-            $this->db->where(array('id' => $id));
-            $this->db->update('workshop');
-        }
+        $this->db->set($dataupdateWorkshop);
+        $this->db->where(array('id' => $id));
+        $this->db->update('workshop');
 
 
         if ($this->db->trans_status() === false) {

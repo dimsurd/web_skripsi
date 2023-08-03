@@ -37,7 +37,7 @@
                                 <div class="row mb-2">
                                     <div class="col-md">
                                         <h4>Charge Repair</h4>
-                                        <div id="charge_repair_input_fields"></div>
+                                        <div id="charge_repair_input_fields"> </div>
                                     </div>
                                     <div class="col-md text-end">
                                         <button type="button" class="btn btn-primary float-right" onclick="$('#modal_charge_repair').modal('show')">Add Data

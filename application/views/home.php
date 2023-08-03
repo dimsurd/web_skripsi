@@ -24,10 +24,10 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header bg-transparent border-bottom p-3">
-                        <h5>Table Waiting For Payment</h5>
+                        <h5>Table Waiting For Approval</h5>
                     </div>
                     <div class="card-body">
-                        <table id="dataTblWaitingForPayment" class="table table-bordered dt-responsive nowrap w-100">
+                        <table id="dataTblWaitingForApproval" class="table table-bordered dt-responsive nowrap w-100">
                             <thead>
                                 <tr>
                                     <th>Nopol</th>
@@ -38,14 +38,47 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php foreach ($data_waiting_for_payment as $key => $value) { ?>
+                                <?php foreach ($data_waiting_for_approval as $key => $value) { ?>
                                     <tr>
                                         <td><?= $value->nopol ?></td>
                                         <td><?= $value->customer_name ?></td>
                                         <td><?= number_format($value->total, 2) ?></td>
-                                        <td>Waiting for payment</td>
+                                        <td>Waiting for Approval</td>
                                         <td>
                                             <a href="<?= base_url("workshop/edit_page/") . $value->id ?>" class="btn btn-info mr-2">Edit</a>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-transparent border-bottom p-3">
+                        <h5>Table Antri Bongkar</h5>
+                    </div>
+                    <div class="card-body">
+                        <table id="dataTblAntriBongkar" class="table table-bordered dt-responsive nowrap w-100">
+                            <thead>
+                                <tr>
+                                    <th>Nopol</th>
+                                    <th>Customer Name</th>
+                                    <th>Total Estimated Cost</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($data_antri_bongkar as $key => $value) { ?>
+                                    <tr>
+                                        <td><?= $value->nopol ?></td>
+                                        <td><?= $value->customer_name ?></td>
+                                        <td><?= number_format($value->total, 2) ?></td>
+                                        <td>Waiting for bongkar</td>
+                                        <td>
+                                            <a href="<?= base_url("workshop/detail_page/") . $value->id ?>" class="btn btn-info mr-2">Edit</a>
                                         </td>
                                     </tr>
                                 <?php } ?>
@@ -76,7 +109,21 @@
                                         <td><?= $value->nopol ?></td>
                                         <td><?= $value->customer_name ?></td>
                                         <td><?= number_format($value->total, 2) ?></td>
-                                        <td><?= $value->charge_name ?></td>
+                                        <td><?php
+                                            if ($value->status == 2) {
+                                                echo 'Proses Bongkar';
+                                            } else if ($value->status == 3) {
+                                                echo 'Proses Dempul';
+                                            } else if ($value->status == 4) {
+                                                echo 'Proses Masking';
+                                            } else if ($value->status == 5) {
+                                                echo 'Proses Cat';
+                                            } else if ($value->status == 6) {
+                                                echo 'Proses Rakit';
+                                            } else if ($value->status == 7) {
+                                                echo 'Proses Poles';
+                                            }
+                                            ?></td>
                                         <td>
                                             <a href="<?= base_url("workshop/detail_page/") . $value->id ?>" class="btn btn-primary mr-2">Detail</a>
                                         </td>

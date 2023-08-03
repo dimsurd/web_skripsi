@@ -30,18 +30,7 @@ class Users extends CI_Controller
         $post = $this->input->post();
         $create_data = $this->Users_model->create_data($post);
 
-
-        if (!$create_data) {
-            $result['status'] = false;
-            $result['message'] = 'Failed: Failed to submit data';
-            $result['code'] = '500';
-        } else {
-            $result['status'] = true;
-            $result['message'] = 'Data has been saved';
-            $result['code'] = '201';
-        }
-
-        echo json_encode($result);
+        echo json_encode($create_data);
     }
 
     public function edit_page($id)
@@ -60,17 +49,7 @@ class Users extends CI_Controller
 
         $update_data = $this->Users_model->update_data($post);
 
-        if (!$update_data) {
-            $result['status'] = false;
-            $result['message'] = 'Failed: Failed to submit data';
-            $result['code'] = '500';
-        } else {
-            $result['status'] = true;
-            $result['message'] = 'Data has been saved';
-            $result['code'] = '201';
-        }
-
-        echo json_encode($result);
+        echo json_encode($update_data);
     }
 
     public function delete_data()

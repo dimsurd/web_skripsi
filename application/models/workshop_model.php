@@ -37,16 +37,12 @@ class Workshop_model extends CI_Model
         $charge_repair_name = $data['charge_repair_name'];
         $charge_repair_cost = $data['charge_repair_cost'];
 
-        $scan_seq = 0;
-
 
         foreach ($charge_repair_name as $key => $value) {
-            $scan_seq++;
             $dataChargeWorkshop = array(
                 'id_workshop' => $id_workshop,
                 'charge_name' => $charge_repair_name[$key],
                 'charge_cost' => str_replace(',', '', $charge_repair_cost[$key]),
-                'scan_seq' => $scan_seq,
                 'status' => 1,
                 'created_date' => date('Y-m-d H:i:s'),
                 'created_by' => $_SESSION['username'],
@@ -81,22 +77,10 @@ class Workshop_model extends CI_Model
         $charge_name = $data['charge_name'];
         $charge_cost = str_replace(',', '', $data['charge_cost']);
 
-        // Get latest data 
-        $latest_data = $this->db->where('id_workshop', $workshop_id)->order_by('scan_seq', 'desc')->get('workshop_charge_repair')->row();
-        $scan_seq = 1;
-
-        if ($latest_data) {
-            $current_seq = $latest_data->scan_seq;
-            $scan_seq = $current_seq + 1;
-        }
-        // End Get latest data 
-
-
         $datainsert = array(
             'id_workshop' => $workshop_id,
             'charge_name' => $charge_name,
             'charge_cost' => $charge_cost,
-            'scan_seq' => $scan_seq,
             'created_date' => date('Y-m-d H:i:s'),
             'created_by' => $_SESSION['username'],
             'date_log' => date('Y-m-d H:i:s'),

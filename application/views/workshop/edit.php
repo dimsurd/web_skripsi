@@ -52,7 +52,6 @@
                                             <th>ID</th>
                                             <th>Name</th>
                                             <th>Cost</th>
-                                            <th>Is Scanned</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -63,7 +62,6 @@
                                                 <td><?= $value->id ?></td>
                                                 <td><?= $value->charge_name ?></td>
                                                 <td><?= number_format($value->charge_cost, 2) ?></td>
-                                                <td><?= $value->is_scanned == 1 ? '<span class="badge text-bg-success">Scanned</span>' : '-' ?></td>
                                                 <td>
                                                     <button onclick="openModalEditCharge(<?= $value->id . ',' . $z ?>)" data-toggle="tooltip" data-placement="top" title="Edit" type="button" class="btn light btn-success btn-sm sharp mr-1"><i class="fas fa-pen"></i></button>
                                                     <button data-toggle="tooltip" data-placement="top" title="Delete" type="button" class="btn light btn-danger btn-sm sharp mr-1" onclick=" deleteCharge(<?= $value->id ?>,<?= $value->charge_cost ?>)"><i class="fas fa-trash"></i></button>

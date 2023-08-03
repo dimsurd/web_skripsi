@@ -21,8 +21,7 @@
                             <select class="custom-select form-control select-2" id="role" name="role" data-parsley-errors-container="#validation-role" required>
                                 <option selected disabled>Choose...</option>
                                 <option value="admin">Admin</option>
-                                <option value="kasir">Kasir</option>
-                                <option value="bengkel">bengkel</option>
+                                <option value="bengkel">Benkel</option>
                                 <option value="front_office">Front Office</option>
                             </select>
                         </div>
@@ -85,6 +84,12 @@
                         }).then(function() {
                             window.location.href = '<?= base_url("users"); ?>';
                         });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Failed.',
+                            text: response.message,
+                        })
                     }
                 },
                 error: function(xhr, status, error) {
